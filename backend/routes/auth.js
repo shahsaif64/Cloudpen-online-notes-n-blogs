@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const userModel = require("../Models/User")
-const { query, validationResult, body } = require('express-validator');
+const { query, validationResult, body } = require('express-validator');  //to verify the coming inputs
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const fetchuser = require("../Middleware/fetchuser");
@@ -24,7 +24,7 @@ router.post('/createuser', [
     const result = validationResult(req);
     if (!result.isEmpty()) {
 
-        return resp.send({ errors: result.array() });
+        return resp.status(400).json({ errors: result.array() });
     }
     try {
         //check whether the user with same email exists already

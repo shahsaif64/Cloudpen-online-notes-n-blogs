@@ -13,6 +13,8 @@ const fetchuser = async (req, resp, next) => {
     try {
          //fetching user data from token
         const data= jwt.verify(token,JWT_SECRET);
+
+        
         //assigning fetched user data to req.user and sending to next available function by next()
         req.user= data.user;
         next();
