@@ -20,6 +20,7 @@ router.post('/createuser', [
     body('password', '8 character minimum').isLength({ min: 8 }),
 
 ], async (req, resp) => {
+    let success=false;
     //if there are errors, return bad request and the error
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -47,9 +48,10 @@ router.post('/createuser', [
         //Creating authenication Token 
         const data = { user: { id: user.id } }
         const authtoken = jwt.sign(data, JWT_SECRET);
+        success=true;
         // console.log(authtoken);
         // resp.json(user);
-        resp.json({ authtoken });
+        resp.json({success, authtoken,user});
 
     } catch (error) {
         console.error(error.message);
@@ -72,6 +74,7 @@ router.post('/login', [
     body('password', 'Password can not be Blank').exists()
 
 ], async (req, resp) => {
+   let success=false;
     //if there are errors, return bad request and the error
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -84,17 +87,20 @@ router.post('/login', [
     try {
         let user = await userModel.findOne({ email });
         if (!user) {
-            return resp.status(400).json({ error: "Please Try to login with correct credentialss" });
+            
+            return resp.status(400).json({success, error: "Please Try to login with correct credentialss" });
         }
 
         const passwordCompare = await bcrypt.compare(password, user.password);
         if (!passwordCompare) {
-            return resp.status(400).json({ error: "Please Try to login with correct credentials" });
+           
+            return resp.status(400).json({success, error: "Please Try to login with correct credentials" });
         }
         //Creating authenication Token 
         const data = { user: { id: user.id } }
         const authtoken = jwt.sign(data, JWT_SECRET);
-        resp.json({ authtoken });
+        success=true;
+        resp.json({success, authtoken });
 
 
     } catch (error) {
