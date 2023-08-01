@@ -6,7 +6,7 @@ var cors = require('cors')
 app.use(cors())
 app.use(express.json());
 
-const PORT=6010
+const PORT=process.env.PORT || 6010
 
 
 
