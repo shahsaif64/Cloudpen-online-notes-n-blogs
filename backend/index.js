@@ -5,6 +5,7 @@ const app=express();
 app.use(cors())
 app.use(express.json());
 connectToMongo();
+const PORT= process.env.PORT || 6010
 
 
 
@@ -17,4 +18,4 @@ app.use('/api/notes',require('./routes/notes'));
 
 
 
-app.listen(4500);
+app.listen(PORT);
