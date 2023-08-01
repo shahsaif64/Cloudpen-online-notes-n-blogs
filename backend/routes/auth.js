@@ -15,24 +15,32 @@ const JWT_SECRET = "forthesakeofsecurity";
 //ROUTE1: Create a User using POST "/api/auth/createuser"   no login required
 
 router.post('/createuser', [
-    body('name', 'Enter a valid name').isLength({ min: 4 }),
+    body('fname', 'Enter a valid first name').isLength({ min: 3 }),
+    body('lname', 'Enter a valid last name').isLength({ min: 3 }),
     body('email', 'Enter a valid Email').isEmail({ min: 4 }),
-    body('password', '8 character minimum').isLength({ min: 8 }),
+    body('phone', '10 digits only').isLength({ min: 10,max:12 }),
+    body('address', '8 character minimum').isLength({ min: 8 }),
+    body('dob', '8 character minimum').isLength({ min: 4 }),
+    body('occupation', '8 character minimum').isLength({ min: 5 }),
+    body('password', '8 character minimum').isLength({ min: 8 })
 
 ], async (req, resp) => {
     let success=false;
     //if there are errors, return bad request and the error
     const result = validationResult(req);
     if (!result.isEmpty()) {
-
+           
         return resp.status(400).json({ errors: result.array() });
     }
     try {
         //check whether the user with same email exists already
-        let user = await userModel.findOne({ email: req.body.email });
+        let useremail = await userModel.findOne({ email: req.body.email });
+        let userphone = await userModel.findOne({ number: req.body.phone });
 
-        if (user) {
+        if ( useremail) {
             return resp.status(400).json({ error: "sorry user with this email already exists,try another email" })
+        }else if(userphone){
+            return resp.status(400).json({ error: "sorry user with this number already exists, enter different number" })
         }
 
         // making hash password and adding salt to hashed password
@@ -40,9 +48,19 @@ router.post('/createuser', [
         const secPass = await bcrypt.hash(req.body.password, salt);
         // if unique email, then create user
         user = await userModel.create({
-            name: req.body.name,
+            fname: req.body.fname,
+            lname: req.body.lname,
             email: req.body.email,
-            password: secPass
+            phone: req.body.phone,
+            address: req.body.address,
+            dob: req.body.dob,
+            occupation: req.body.occupation,
+            password: secPass,
+            website: "Add your website",
+            github: "Add your github account",
+            twitter: "Add your twitter account",
+            insta: "Add your instagram account",
+            facebook: "Add your facebook account"
         });
 
         //Creating authenication Token 
@@ -100,7 +118,7 @@ router.post('/login', [
         const data = { user: { id: user.id } }
         const authtoken = jwt.sign(data, JWT_SECRET);
         success=true;
-        resp.json({success, authtoken });
+        resp.json({success, authtoken,user });
 
 
     } catch (error) {
@@ -135,8 +153,27 @@ router.post('/fetchuser', fetchuser, async (req, resp) => {
 
 
 
+// Edit a user 
+
+router.put('/updateuser', fetchuser, async (req, resp) => {
+
+    // const { website,github,twitter,insta,facebook } = req.body;
+     try {
+        let userId=req.user.id;
+            let updatedata =await userModel.findByIdAndUpdate(userId, {$set:req.body}, { new: true });
+            resp.send(updatedata);
+            console.log(updatedata);
+        
+        
+    } catch (error) {
+        console.error(error.message);
+        resp.status(500).send("Internal server error occured")
+    }
 
 
+
+
+})
 
 
 

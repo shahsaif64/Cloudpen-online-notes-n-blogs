@@ -7,6 +7,7 @@ const Navbar = () => {
   useEffect(() => {
     // console.log(location.pathname)
   }, [location]);
+
   const handlelogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
@@ -30,8 +31,9 @@ const Navbar = () => {
         </li>
         
       </ul>
+      {localStorage.getItem("token")?<Link className="btn btn-primary mx-2" to="/profile" role="button">Profile</Link>:<span></span>}
       {localStorage.getItem("token")?<button onClick={handlelogout} className='btn btn-primary'>Logout</button>:<form className="d-flex" role="search">
-      <Link className="btn btn-primary mx-2" to="/profile" role="button">Profile</Link>
+      
         {location.pathname==='/login'?<Link className="btn btn-primary mx-2" to="/signup" role="button">SignUp</Link>:<Link className="btn btn-primary mx-2" to="/login" role="button">LogIn</Link>}
       
       

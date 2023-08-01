@@ -4,8 +4,10 @@ import NoteContext from './NoteContext';
 
 const NoteState = (props) => {
   const host = "http://localhost:4500";
+  const [user, setUser] = useState({});
   const initialnotes = [];
   const [notes, setNotes] = useState(initialnotes);
+ 
 
   //fetch all notes
   const fetchNotes = async () => {
@@ -19,6 +21,8 @@ const NoteState = (props) => {
     });
     const fethedData = await response.json();
     setNotes(fethedData);
+    localStorage.setItem("notes", fethedData.length);
+    
   }
 
 
@@ -61,7 +65,8 @@ const NoteState = (props) => {
     await response.json();
     // console.log(editedNote)
 
-           let newNotes=JSON.parse(JSON.stringify(notes))          
+           let newNotes=JSON.parse(JSON.stringify(notes))     
+               
 
     //this is a logic to edit a note
     for (let i = 0; i < newNotes.length; i++) {
@@ -97,9 +102,43 @@ const NoteState = (props) => {
     setNotes(newnotes);
   }
 
+  //fetch user information
+  const fetchUser = async () => {
+    // API CALL
+    const response = await fetch(`${host}/api/auth/fetchuser`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem('token')
+      }
+    });
+    const userData = await response.json();
+   
+    setUser(userData);
+    
+  }
+
+
+  //Update user information
+  const updateUser = async (website,github,twitter,insta,facebook) => {
+    // API CALL
+    const response = await fetch(`${host}/api/auth/updateuser`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem('token')
+      },
+      body: JSON.stringify({ website,github,twitter,insta,facebook })
+    });
+    const userData = await response.json();
+   
+    setUser(userData);
+    
+  }
+
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, editNote, deleteNote, fetchNotes }}>
+    <NoteContext.Provider value={{ notes, addNote, editNote, deleteNote, fetchNotes,fetchUser,user ,updateUser}}>
       {props.children}
     </NoteContext.Provider>
   )

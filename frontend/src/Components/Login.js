@@ -1,10 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Link, useNavigate } from "react-router-dom";
 import dev from '../media/dev.png';
 
 const Login = (props) => {
     const [credentials, setCredentials] = useState({ email: "", password: "" })
     const navigate = useNavigate();
+    useEffect(() => {
+        if(localStorage.getItem("token")) {
+          navigate("/");
+        }
+    
+        // eslint-disable-next-line
+      }, [])
 
     const HandleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -23,7 +30,7 @@ const Login = (props) => {
         });
 
         const data = await response.json();
-        console.log(data);
+        console.log(data.authtoken);
 
         if (data.success) {
             localStorage.setItem("token", data.authtoken);
