@@ -34,12 +34,12 @@ const Signup = (props) => {
 
     if (password === cpassword) {
       // API CALL
-      const response = await fetch(`http://localhost:4500/api/auth/createuser`, {
+      const response = await fetch(`https://cloudpenbackend.onrender.com/api/auth/createuser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ fname,lname , email, password, cpassword, phone, address, dob, occupation }) // body data type must match "Content-Type" header
+        body: JSON.stringify({ fname,lname , email, password, phone, address, dob, occupation }) // body data type must match "Content-Type" header
       });
 
       const data = await response.json();

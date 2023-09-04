@@ -23,7 +23,7 @@ const Signup = (props) => {
 
     if (password === cpassword) {
       // API CALL
-      const response = await fetch(`http://localhost:4500/api/auth/createuser`, {
+      const response = await fetch(`https://cloudpenbackend.onrender.com/api/auth/createuser`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -3,7 +3,8 @@ import NoteContext from './NoteContext';
 
 
 const NoteState = (props) => {
-  const host = "http://localhost:4500";
+  // const host = "http://localhost:4500";
+  const host = "https://cloudpenbackend.onrender.com";
   const [user, setUser] = useState({});
   const initialnotes = [];
   const [notes, setNotes] = useState(initialnotes);
